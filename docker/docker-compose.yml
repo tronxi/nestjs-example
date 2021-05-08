@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+    mysql:
+      container_name: mysql
+      image: mysql
+      env_file: .env
+      ports:
+        - "3306:3306"
+      volumes: 
+        - ./mysql:/var/lib/mysql
+      networks: 
+        - test-net
+networks: 
+    test-net:
