@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './infrastructure/persistence/entities/user.entity';
 import { UserRepositoryTypeOrm } from './infrastructure/persistence/repositories/user.repository.type.orm';
 import { UserRepository } from './domain/repositories/user.repository';
-import { UserDao } from './infrastructure/persistence/repositories/user.dao';
+import { UserRepositoryAdapter } from './infrastructure/persistence/repositories/user.repository.adapter';
 
 @Module({
   imports: [
@@ -24,8 +24,8 @@ import { UserDao } from './infrastructure/persistence/repositories/user.dao';
   controllers: [UserController],
   providers: [
     UserService,
-    UserDao,
-    { provide: UserRepository, useClass: UserDao },
+    UserRepositoryAdapter,
+    { provide: UserRepository, useClass: UserRepositoryAdapter },
   ],
 })
 export class AppModule {}

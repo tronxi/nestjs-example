@@ -6,7 +6,7 @@ import { CreateUser } from '../../../domain/models/create.user.model';
 import { UserEntity } from "../entities/user.entity";
 
 @Injectable()
-export class UserDao implements UserRepository {
+export class UserRepositoryAdapter implements UserRepository {
   constructor(private userRepositoryTypeOrm: UserRepositoryTypeOrm) {}
   async findAll(): Promise<User[]> {
     const userEntities: UserEntity[] = await this.userRepositoryTypeOrm.findAll();
