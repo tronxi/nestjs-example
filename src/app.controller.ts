@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
-import { DespedidaDto } from './dto/despedidaDto';
+import { DespedidaDto } from './infrastructure/dto/despedidaDto';
 
 @Controller()
 export class AppController {
