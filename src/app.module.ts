@@ -1,13 +1,11 @@
-import { UserController } from './infrastructure/controllers/user.controller';
+import { UserController } from './infrastructure/api/rest/controllers/user.controller';
 import { UserService } from './domain/services/user.service';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './infrastructure/entities/user.entity';
-import { UserRepository } from './infrastructure/repositories/user.repository';
-import { UserPersistence } from './domain/persistence/user.persistence';
-import { UserDao } from './infrastructure/repositories/user.dao';
+import { UserEntity } from './infrastructure/persistence/entities/user.entity';
+import { UserRepositoryTypeOrm } from './infrastructure/persistence/repositories/user.repository.type.orm';
+import { UserRepository } from './domain/repositories/user.repository';
+import { UserDao } from './infrastructure/persistence/repositories/user.dao';
 
 @Module({
   imports: [
@@ -21,14 +19,13 @@ import { UserDao } from './infrastructure/repositories/user.dao';
       entities: [UserEntity],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([UserRepository]),
+    TypeOrmModule.forFeature([UserRepositoryTypeOrm]),
   ],
-  controllers: [UserController, AppController],
+  controllers: [UserController],
   providers: [
     UserService,
-    AppService,
     UserDao,
-    { provide: UserPersistence, useClass: UserDao },
+    { provide: UserRepository, useClass: UserDao },
   ],
 })
 export class AppModule {}
