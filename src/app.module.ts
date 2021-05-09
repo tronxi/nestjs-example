@@ -9,16 +9,7 @@ import { UserRepositoryAdapter } from './infrastructure/persistence/repositories
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'user',
-      password: 'pass',
-      database: 'test',
-      entities: [UserEntity],
-      synchronize: true,
-    }),
+    TypeOrmModule.forRoot(),
     TypeOrmModule.forFeature([UserRepositoryTypeOrm]),
   ],
   controllers: [UserController],
