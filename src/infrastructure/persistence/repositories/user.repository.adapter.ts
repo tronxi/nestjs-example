@@ -18,6 +18,11 @@ export class UserRepositoryAdapter implements UserRepository {
     return this.mapToUser(userEntity);
   }
 
+  async findByEmail(email: string): Promise<User> {
+    const userEntity: UserEntity = await this.userRepositoryTypeOrm.findByEmail(email);
+    return this.mapToUser(userEntity);
+  }
+
   removeById(id: string): Promise<void> {
     return this.userRepositoryTypeOrm.removeById(id);
   }
@@ -29,6 +34,7 @@ export class UserRepositoryAdapter implements UserRepository {
 
   private mapToEntity(createUser: CreateUser): UserEntity {
     const userEntity: UserEntity = new UserEntity();
+    userEntity.email = createUser.email;
     userEntity.firstName = createUser.firstName;
     userEntity.lastName = createUser.lastName;
     userEntity.password = createUser.password;
@@ -39,6 +45,7 @@ export class UserRepositoryAdapter implements UserRepository {
   private mapToUser(userEntity: UserEntity): User {
     const user: User = new User();
     user.id = userEntity.id;
+    user.email = userEntity.email;
     user.firstName = userEntity.firstName;
     user.lastName = userEntity.lastName;
     user.password = userEntity.password;

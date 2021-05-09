@@ -15,6 +15,10 @@ export class UserService {
     return this.userRepository.findById(id);
   }
 
+  findByEmail(email: string): Promise<User> {
+    return this.userRepository.findByEmail(email);
+  }
+
   remove(id: string): Promise<void> {
     return this.userRepository.removeById(id);
   }

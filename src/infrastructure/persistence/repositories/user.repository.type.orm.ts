@@ -11,6 +11,12 @@ export class UserRepositoryTypeOrm extends Repository<UserEntity> {
     return this.findOne(id);
   }
 
+  findByEmail(email: string): Promise<UserEntity> {
+    return this.findOne(  {where: [
+      { email: email }
+    ]})
+  }
+
   async removeById(id: string): Promise<void> {
     await this.delete(id);
   }
