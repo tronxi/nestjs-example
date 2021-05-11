@@ -12,11 +12,12 @@ import { LoginController } from './infrastructure/api/rest/controllers/login.con
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './infrastructure/api/rest/strategies/local.strategy';
 import { JwtStrategy } from './infrastructure/api/rest/strategies/jwt.strategy';
+import { RoleRepositoryTypeOrm } from './infrastructure/persistence/repositories/role.repository.type.orm';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
-    TypeOrmModule.forFeature([UserRepositoryTypeOrm]),
+    TypeOrmModule.forFeature([UserRepositoryTypeOrm, RoleRepositoryTypeOrm]),
     PassportModule,
     JwtModule.register({
       secret: 'secret', //meter en una variable de entorno

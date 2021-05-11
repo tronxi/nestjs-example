@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, ManyToMany, JoinTable } from 'typeorm';
+import { RoleEntity } from './role.entity';
 
 @Entity()
 @Unique(["email"])
@@ -20,4 +21,8 @@ export class UserEntity {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @ManyToMany(() => RoleEntity)
+  @JoinTable()
+  roles: RoleEntity[];
 }

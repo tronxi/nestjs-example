@@ -4,15 +4,21 @@ import { EntityRepository, Repository } from 'typeorm';
 @EntityRepository(UserEntity)
 export class UserRepositoryTypeOrm extends Repository<UserEntity> {
   findAll(): Promise<UserEntity[]> {
-    return this.find();
+    return this.find({relations: ['roles']});
   }
 
   findById(id: string): Promise<UserEntity> {
-    return this.findOne(id);
+    return this.findOne({
+      relations: ['roles'],
+      where: [
+        { id: id }
+      ]});
   }
 
   findByEmail(email: string): Promise<UserEntity> {
-    return this.findOne(  {where: [
+    return this.findOne(  {
+      relations: ['roles'],
+      where: [
       { email: email }
     ]})
   }

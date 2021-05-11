@@ -10,7 +10,7 @@ export class LoginController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
-    const payload = { email: req.user.email, sub: req.user.id };
+    const payload = { email: req.user.email, sub: req.user.id, role: req.user.roles };
     return {
       access_token: this.jwtService.sign(payload),
     };

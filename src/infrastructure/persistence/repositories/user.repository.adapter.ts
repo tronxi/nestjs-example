@@ -1,26 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { User } from '../../../domain/models/user.model';
-import { UserRepositoryTypeOrm } from './user.repository.type.orm';
-import { UserRepository } from '../../../domain/repositories/user.repository';
-import { CreateUser } from '../../../domain/models/create.user.model';
+import { Injectable } from "@nestjs/common";
+import { User } from "../../../domain/models/user.model";
+import { UserRepositoryTypeOrm } from "./user.repository.type.orm";
+import { UserRepository } from "../../../domain/repositories/user.repository";
+import { CreateUser } from "../../../domain/models/create.user.model";
 import { UserEntity } from "../entities/user.entity";
+import { UserMapper } from "../mappers/user.mapper";
+import { RoleRepositoryTypeOrm } from "./role.repository.type.orm";
 
 @Injectable()
 export class UserRepositoryAdapter implements UserRepository {
-  constructor(private userRepositoryTypeOrm: UserRepositoryTypeOrm) {}
+  constructor(private userRepositoryTypeOrm: UserRepositoryTypeOrm,
+              private roleRepositoryTypeOrm: RoleRepositoryTypeOrm) {}
   async findAll(): Promise<User[]> {
     const userEntities: UserEntity[] = await this.userRepositoryTypeOrm.findAll();
-    return this.mapList(userEntities);
+    return UserMapper.mapList(userEntities);
   }
 
   async findById(id: string): Promise<User> {
     const userEntity: UserEntity = await this.userRepositoryTypeOrm.findById(id);
-    return this.mapToUser(userEntity);
+    if (userEntity === undefined) return undefined;
+    return UserMapper.mapToUser(userEntity);
   }
 
   async findByEmail(email: string): Promise<User> {
     const userEntity: UserEntity = await this.userRepositoryTypeOrm.findByEmail(email);
-    return this.mapToUser(userEntity);
+    if (userEntity === undefined) return undefined;
+    return UserMapper.mapToUser(userEntity);
   }
 
   removeById(id: string): Promise<void> {
@@ -28,32 +33,9 @@ export class UserRepositoryAdapter implements UserRepository {
   }
 
   async create(createUser: CreateUser): Promise<User> {
-    const userEntity: UserEntity = await this.userRepositoryTypeOrm.createUser(this.mapToEntity(createUser));
-    return this.mapToUser(userEntity);
-  }
-
-  private mapToEntity(createUser: CreateUser): UserEntity {
-    const userEntity: UserEntity = new UserEntity();
-    userEntity.email = createUser.email;
-    userEntity.firstName = createUser.firstName;
-    userEntity.lastName = createUser.lastName;
-    userEntity.password = createUser.password;
-    userEntity.isActive = createUser.isActive;
-    return userEntity;
-  }
-
-  private mapToUser(userEntity: UserEntity): User {
-    const user: User = new User();
-    user.id = userEntity.id;
-    user.email = userEntity.email;
-    user.firstName = userEntity.firstName;
-    user.lastName = userEntity.lastName;
-    user.password = userEntity.password;
-    user.isActive = userEntity.isActive;
-    return user;
-  }
-
-  private mapList(userEntities: UserEntity[]): User[] {
-    return userEntities.map((user) => this.mapToUser(user));
+    const userEntity: UserEntity = await UserMapper.mapToEntity(createUser);
+    userEntity.roles = await Promise.all(createUser.roles.map((role) => this.roleRepositoryTypeOrm.findByName(role)));
+    const createdUserEntity = await this.userRepositoryTypeOrm.createUser(userEntity);
+    return UserMapper.mapToUser(createdUserEntity);
   }
 }

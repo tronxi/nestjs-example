@@ -1,25 +1,27 @@
-import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
-import { UserService } from 'src/domain/services/user.service';
-import { User } from '../../../../domain/models/user.model';
-import { CreateUserDto } from '../dto/create.user.dto';
-import { CreateUser } from "../../../../domain/models/create.user.model";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { UserService } from "src/domain/services/user.service";
+import { User } from "../../../../domain/models/user.model";
+import { CreateUserDto } from "../dto/create.user.dto";
 import { UserDto } from "../dto/user.dto";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
+import { UserMapper } from "../mappers/user.mapper";
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getUsers(): Promise<UserDto[]> {
     const userList: User[] = await this.userService.findAll();
-    return this.mapToUserDtoList(userList);
+    return UserMapper.mapToUserDtoList(userList);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<UserDto> {
     const user: User = await this.userService.findById(id);
-    return this.mapToUserDto(user);
+    return UserMapper.mapToUserDto(user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -30,32 +32,7 @@ export class UserController {
 
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
-    const user: User = await this.userService.create(this.mapToCreateUser(createUserDto));
-    return this.mapToUserDto(user);
-  }
-
-  private mapToUserDto(user: User): UserDto {
-    const userDto: UserDto = new UserDto();
-    userDto.id = user.id;
-    userDto.email = user.email;
-    userDto.firstName = user.firstName;
-    userDto.lastName = user.lastName;
-    userDto.password = '*****';
-    userDto.isActive = user.isActive;
-    return userDto;
-  }
-
-  private mapToUserDtoList(userList: User[]): UserDto[] {
-    return userList.map(user => this.mapToUserDto(user));
-  }
-
-  private mapToCreateUser(createUserDto: CreateUserDto): CreateUser {
-    const createUser: CreateUser = new CreateUser();
-    createUser.email = createUserDto.email;
-    createUser.firstName = createUserDto.firstName;
-    createUser.lastName = createUserDto.lastName;
-    createUser.password = createUserDto.password;
-    createUser.isActive = createUserDto.isActive;
-    return createUser;
+    const user: User = await this.userService.create(UserMapper.mapToCreateUser(createUserDto));
+    return UserMapper.mapToUserDto(user);
   }
 }
