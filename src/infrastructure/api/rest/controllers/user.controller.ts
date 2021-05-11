@@ -1,9 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards, Req } from "@nestjs/common";
+import { Role } from "src/domain/models/role.model";
 import { UserService } from "src/domain/services/user.service";
 import { User } from "../../../../domain/models/user.model";
+import { JwtAuthGuard } from "../authentication/guards/jwt-auth.guard";
+import { Roles } from "../authorization/role.decorator";
+import { RoleGuard } from "../authorization/role.guard";
 import { CreateUserDto } from "../dto/create.user.dto";
 import { UserDto } from "../dto/user.dto";
-import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { UserMapper } from "../mappers/user.mapper";
 
 @Controller('users')
@@ -24,7 +27,8 @@ export class UserController {
     return UserMapper.mapToUserDto(user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   deleteUserById(@Param('id') id: string): Promise<void> {
     return this.userService.remove(id);
