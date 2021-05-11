@@ -2,6 +2,7 @@ import { CreateUser } from "src/domain/models/create.user.model";
 import { User } from "src/domain/models/user.model";
 import { UserEntity } from "../entities/user.entity";
 import { RoleMapper } from "./role.mapper";
+import * as bcrypt from 'bcrypt';
 
 export class UserMapper {
   public static mapToEntity(createUser: CreateUser): UserEntity {
@@ -9,7 +10,7 @@ export class UserMapper {
     userEntity.email = createUser.email;
     userEntity.firstName = createUser.firstName;
     userEntity.lastName = createUser.lastName;
-    userEntity.password = createUser.password;
+    userEntity.password = bcrypt.hashSync(createUser.password, 10);
     userEntity.isActive = createUser.isActive;
     return userEntity;
   }
