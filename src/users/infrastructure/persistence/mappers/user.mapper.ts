@@ -1,8 +1,8 @@
-import { CreateUser } from "src/domain/models/create.user.model";
-import { User } from "src/domain/models/user.model";
 import { UserEntity } from "../entities/user.entity";
 import { RoleMapper } from "./role.mapper";
 import * as bcrypt from 'bcrypt';
+import { User } from "src/users/domain/models/user.model";
+import { CreateUser } from "src/users/domain/models/create.user.model";
 
 export class UserMapper {
   public static mapToEntity(createUser: CreateUser): UserEntity {

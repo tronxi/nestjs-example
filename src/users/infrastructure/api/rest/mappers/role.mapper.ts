@@ -1,4 +1,4 @@
-import { Role } from "src/domain/models/role.model";
+import { Role } from "src/users/domain/models/role.model";
 import { RoleDto } from "../dto/role.dto";
 
 export class RoleMapper {

@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards, Req } from "@nestjs/common";
-import { Role } from "src/domain/models/role.model";
-import { UserService } from "src/domain/services/user.service";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Role } from "src/users/domain/models/role.model";
+import { UserService } from "src/users/domain/services/user.service";
 import { User } from "../../../../domain/models/user.model";
 import { JwtAuthGuard } from "../authentication/guards/jwt-auth.guard";
 import { Roles } from "../authorization/role.decorator";

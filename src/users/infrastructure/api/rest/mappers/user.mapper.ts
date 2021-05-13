@@ -1,5 +1,5 @@
-import { CreateUser } from "src/domain/models/create.user.model";
-import { User } from "src/domain/models/user.model";
+import { CreateUser } from "src/users/domain/models/create.user.model";
+import { User } from "src/users/domain/models/user.model";
 import { CreateUserDto } from "../dto/create.user.dto";
 import { UserDto } from "../dto/user.dto";
 import { RoleMapper } from "./role.mapper";
