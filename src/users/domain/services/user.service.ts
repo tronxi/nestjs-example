@@ -4,6 +4,7 @@ import { UserRepository } from '../repositories/user.repository';
 import { CreateUser } from '../models/create.user.model';
 import { DomainException } from '../exception/domain.exception';
 import { UserNotFoundExeption } from '../exception/user.not.found.exeption';
+import { UserAlreadyExistException } from '../exception/user.already.exist.exception';
 
 @Injectable()
 export class UserService {
@@ -31,7 +32,9 @@ export class UserService {
     return this.userRepository.removeById(id);
   }
 
-  create(createUser: CreateUser): Promise<User> {
+  async create(createUser: CreateUser): Promise<User> {
+    const user: User = await this.userRepository.findByEmail(createUser.email);
+    if(user !== undefined) throw new UserAlreadyExistException('user with email: ' + createUser.email + ' already exist');
     return this.userRepository.create(createUser);
   }
 }
