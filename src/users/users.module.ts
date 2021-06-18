@@ -12,9 +12,11 @@ import { AuthService } from "./domain/services/auth.service";
 import { LocalStrategy } from "./infrastructure/api/rest/authentication/strategies/local.strategy";
 import { JwtStrategy } from "./infrastructure/api/rest/authentication/strategies/jwt.strategy";
 import { RoleRepositoryTypeOrm } from "./infrastructure/persistence/repositories/role.repository.type.orm";
+import { MailModule } from "src/mail/mail.module";
 
 @Module({
   imports: [
+    MailModule,
     TypeOrmModule.forRoot(),
     TypeOrmModule.forFeature([UserRepositoryTypeOrm, RoleRepositoryTypeOrm]),
     PassportModule,

@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { MailService } from "src/mail/mail.service";
 import { Role } from "src/users/domain/models/role.model";
 import { UserService } from "src/users/domain/services/user.service";
 import { User } from "../../../../domain/models/user.model";
@@ -11,13 +12,21 @@ import { UserMapper } from "../mappers/user.mapper";
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+              private mailService: MailService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async getUsers(): Promise<UserDto[]> {
     const userList: User[] = await this.userService.findAll();
+
     return UserMapper.mapToUserDtoList(userList);
+  }
+
+  @Get('/mail')
+  async sendEmail() {
+    const to = "sergio.gsanchez97@gmail.com";
+    await this.mailService.send(to, 'lacontraseñaaleatoria');
   }
 
   @UseGuards(JwtAuthGuard)
@@ -25,6 +34,12 @@ export class UserController {
   async getUserById(@Param('id') id: string): Promise<UserDto> {
     const user: User = await this.userService.findById(id);
     return UserMapper.mapToUserDto(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete()
+  async delete(@Query('email') email: string): Promise<string> {
+    return email;
   }
 
   @Roles(Role.Admin)
