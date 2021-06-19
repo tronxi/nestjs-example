@@ -13,6 +13,7 @@ import { LocalStrategy } from "./infrastructure/api/rest/authentication/strategi
 import { JwtStrategy } from "./infrastructure/api/rest/authentication/strategies/jwt.strategy";
 import { RoleRepositoryTypeOrm } from "./infrastructure/persistence/repositories/role.repository.type.orm";
 import { MailModule } from "src/mail/mail.module";
+import { ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
@@ -20,9 +21,12 @@ import { MailModule } from "src/mail/mail.module";
     TypeOrmModule.forRoot(),
     TypeOrmModule.forFeature([UserRepositoryTypeOrm, RoleRepositoryTypeOrm]),
     PassportModule,
-    JwtModule.register({
-      secret: 'secret', //meter en una variable de entorno
-      signOptions: { expiresIn: '3600s' },
+    JwtModule.registerAsync({
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('SECRET'),
+        signOptions: { expiresIn: '3600s' },
+      }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [UserController, LoginController],

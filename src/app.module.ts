@@ -1,11 +1,16 @@
 import { Module } from "@nestjs/common";
 import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
   imports: [
     UsersModule,
-    MailModule
+    MailModule,
+    ConfigModule.forRoot({
+        isGlobal: true
+      }
+    )
   ],
   controllers: [],
   providers: [],

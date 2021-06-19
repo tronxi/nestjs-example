@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { MailService } from "src/mail/mail.service";
 import { Role } from "src/users/domain/models/role.model";
 import { UserService } from "src/users/domain/services/user.service";
@@ -13,7 +14,8 @@ import { UserMapper } from "../mappers/user.mapper";
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService,
-              private mailService: MailService) {}
+              private mailService: MailService,
+              private configService: ConfigService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -39,7 +41,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Delete()
   async delete(@Query('email') email: string): Promise<string> {
-    return email;
+    return this.configService.get('MAIL_PASSWORD');
   }
 
   @Roles(Role.Admin)
